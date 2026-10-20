@@ -1,0 +1,522 @@
+{
+  "name": "Customer support",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1488,
+        -432
+      ],
+      "id": "e28e2e63-7f23-46ba-973d-3e0f8ea7e11c",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Z0pHtqiGZkzPCygr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1_cSRgCoYsqJ2EWyeLszcuvpjUS-kEZdB",
+          "mode": "list",
+          "cachedResultName": "Customer support",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_cSRgCoYsqJ2EWyeLszcuvpjUS-kEZdB"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        -1056
+      ],
+      "id": "5c7855e4-7ac6-4fc9-a513-08d0c2ea73e9",
+      "name": "Google Drive Trigger1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "6N5Of7W1amxUZnzu",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1072,
+        -1056
+      ],
+      "id": "d2c33bc0-7df8-4d3a-b7d6-3afea9746af7",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "6N5Of7W1amxUZnzu",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "nova-craft-details",
+          "mode": "list",
+          "cachedResultName": "nova-craft-details"
+        },
+        "options": {
+          "pineconeNamespace": "nova-craft"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -816,
+        -1056
+      ],
+      "id": "000fd44a-682a-4cdd-b9f2-4812adc4d818",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "BhZ4qssfJgb5I9UE",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -720,
+        -832
+      ],
+      "id": "75c4b06f-9d22-4274-a8aa-36f8d93e62ba",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 3000,
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -624
+      ],
+      "id": "761e0e95-4150-491c-80c0-e8e0804d33fc",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        -784
+      ],
+      "id": "e51c5499-067f-4bee-8e70-bb632a08e067",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet.replace(/^Dear\\s+NovaCart[^\\n,]*,\\s*/i, '') }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "NovaCart ",
+              "description": "Any mail related to NovaCart."
+            },
+            {
+              "category": "Other",
+              "description": "any mail not related to NovaCart"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -1168,
+        -416
+      ],
+      "id": "673c57ec-18c9-41bd-9c98-2c98b066a030",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -128
+      ],
+      "id": "e27d17c3-b2e4-4df5-8e03-e56455779dac",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.snippet.replace(/^Dear\\s+NovaCart[^\\n,]*,\\s*/i, '') }}",
+        "options": {
+          "systemMessage": "# Overview\nYou are a customer support agent from NovaCart. Your job is to write responses to incoming emails using your knowledgebase tool.\n\n# Output\nOnly output the email body.\n\n# Instructions\n- write friendly emails with emoji\n- Sign off as \"Mr. Helpful from NovaCart\"\n- - Use HTML <br> tags or separate paragraphs so the email has proper spacing and line breaks."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -688,
+        -448
+      ],
+      "id": "3979f3b1-38de-471a-8f2d-ef634a8c67d2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool for NovaCart customer support question answering.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "nova-craft-details",
+          "mode": "list",
+          "cachedResultName": "nova-craft-details"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        -208
+      ],
+      "id": "2c584685-3a8c-4353-b626-0202d691c2e5",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "BhZ4qssfJgb5I9UE",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -32
+      ],
+      "id": "ecb84273-dc5e-4115-814e-899ffc95a12e",
+      "name": "Embeddings Ollama1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -272,
+        -432
+      ],
+      "id": "6f7168a4-8beb-435f-836d-8aa17ef68b05",
+      "name": "Reply to a message",
+      "webhookId": "84ffeb65-cc6d-40a8-81f1-45842c6f748a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Z0pHtqiGZkzPCygr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "=llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -240
+      ],
+      "id": "52f21c18-fcdb-407c-b95a-12eea14612b5",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1248,
+        -208
+      ],
+      "id": "d6d98a03-4430-4469-b37f-82898ce7a269",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "1a120aa95e7cd714",
+          "threadId": "1a120aa95e7cd714",
+          "snippet": "Dear NovaCart Customer Support Team, Hey, I am interested in NovaCart and would like to know more about your products and services. Could you please provide me with some information about the available",
+          "payload": {
+            "mimeType": "multipart/alternative"
+          },
+          "sizeEstimate": 7710,
+          "historyId": "1212083",
+          "internalDate": "1791549398000",
+          "labels": [
+            {
+              "id": "INBOX",
+              "name": "INBOX"
+            },
+            {
+              "id": "IMPORTANT",
+              "name": "IMPORTANT"
+            },
+            {
+              "id": "CATEGORY_PERSONAL",
+              "name": "CATEGORY_PERSONAL"
+            }
+          ],
+          "From": "Sakshi <maulekhisakshi23@gmail.com>",
+          "Subject": "",
+          "To": "Sakshi Maulekhi <sakshimaulekhi84@gmail.com>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Google Drive Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "50fb23d4-23d4-47d8-abab-f06d7cd01ec9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "26e1527ba38a5c1da6f24ac6e59153ee080d7c378383c4ff92e299be333bfc8d"
+  },
+  "nodeGroups": [],
+  "id": "vwLPWqk1KgumGMtj",
+  "tags": []
+}

@@ -1,1 +1,256 @@
-
+{
+  "name": "Social-media agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Social Media Post Generator and uploader",
+        "formDescription": "Fill out these fields and you will have a full social media post ready to go in a minute.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Topic of post",
+              "placeholder": "Robots",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Target audience",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -1504,
+        -416
+      ],
+      "id": "dcde6155-7930-4d17-956b-58dd8e8d69ff",
+      "name": "On form submission",
+      "webhookId": "2989f9d8-e457-4a8f-84c9-174406f1c71f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1072,
+        -192
+      ],
+      "id": "dde1288c-98dc-4c0f-bb57-5aa5bb5b488e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TUyYYjgWDGfm7imL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "auto_parameters": false
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1360,
+        -192
+      ],
+      "id": "41c43f4a-38fa-4613-8f4c-ea90bc981c54",
+      "name": "Search the web in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YeH10tLGRvd1FSfa",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['Topic of post'] }}\n{{ $json['Target audience'] }}\n",
+        "options": {
+          "systemMessage": "=# Overview\nYou are an AI agent specialized in creating professional, educational, and engaging Social media posts based on any topic provided by the user. Always use the current date : `{{ $now.format('yyyy-MM-dd') }}`.\n\n## Objectives:\nAlways begin by conducting a real-time search using the Tavily tool to gather the most accurate, up-to-date information on the topic. The post should be written to appeal to the provided target audience.\n\nBased on your research, generate a well-structured Social post that:\n* Starts with an engaging hook\n* Professional in tone\n* Clear and easy to read\n* Educational and insightful\n* Relevant and minimal\n* Includes proper source attribution (e.g., \"according to [source]\")\n* Contains relevant hashtags to improve visibility\n* Ends with a clear call to action (e.g., asking for thoughts, feedback, or shares)\n\n## Output Instructions:\n* Your ONLY output should be the final Social media post text.\n* Do not include explanations, notes, or anything beyond the post itself.\n\n## Example Workflow:\n1) Receive a topic (e.g., \"The ROI of warehouse automation\")\n2) Use Tavily to search and gather recent information or case studies\n3) Draft a Social media post using that research\n4) Format it with source citations, clean structure, optional hashtags, and a call to action"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1280,
+        -416
+      ],
+      "id": "476ae5eb-5335-401a-acf6-ee968186d59c",
+      "name": "Social Media Post Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "# Overview\nYou are an AI agent that transforms Social media posts into visual prompt descriptions for generating graphic marketing materials. These visuals are designed to be paired with the post on Social accounts, helping communicate the message in a visually engaging, brand-aligned way.\n\n## Objective:\n- Read and analyze the given Social media post.\n- Identify the main message, insight, or takeaway from the post.\n- Create a clear and compelling graphic prompt that can be used with a text-to-image generator.\n- The result should be a marketing-style graphic or hyperrealistic photo that:\n1) Visually supports or illustrates the key idea of the post\n2) Looks appropriate for use in a professional feed\n3) Feels polished, modern, and engaging\n\n## Output Instructions:\n- Output only the final image prompt. Do not output quotation marks.\n- Do not repeat or rephrase the post.\n- Do not add any explanations or extra content — just the image prompt.\n- Never leave things blank like \"header area reserved for customizable callout text\"\n- Output numeric stats when available in the original post\n\n## Style Guidelines:\n- Think like a brand designer or marketing creative.\n- Visuals may include: text, charts, icons, abstract shapes, overlays, modern illustrations, motion-like effects, bold typography elements (described, not rendered), or metaphorical concepts.\n- You can mention layout suggestions (e.g., \"split screen design,\" \"header with bold title and subtle background illustration\").\n- Assume the output will be generated using AI image tools — your prompt should guide those tools effectively.\n\n## Example Prompt Format:\nA modern flat-style graphic showing a human brain connected to mechanical gears, representing the fusion of AI and automation. Minimalist background, soft gradients, clean sans-serif text placement space at the top."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -912,
+        -416
+      ],
+      "id": "acbc2e1f-b60c-4054-8dfc-1c079f4f5d67",
+      "name": "Image Prompt Agent"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -416
+      ],
+      "id": "c58bcc0e-9c9e-42a6-a441-69158adb0b4c",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "ohrTRXWowzhlPCTl",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3.1-flash-image-preview"
+        },
+        "prompt": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -544,
+        -416
+      ],
+      "id": "e6c4e182-1040-4aa8-b506-5cb21de3ad46",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TUyYYjgWDGfm7imL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Topic of post": "AI Agents in 2026",
+          "Target audience": "Tech Community",
+          "submittedAt": "2026-10-20T02:36:37.399-04:00",
+          "formMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Social Media Post Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Social Media Post Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Image Prompt Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search the web in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Social Media Post Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Social Media Post Agent": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "01cf010f-df00-4a92-9f2c-e44aa4530b8d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "26e1527ba38a5c1da6f24ac6e59153ee080d7c378383c4ff92e299be333bfc8d"
+  },
+  "nodeGroups": [],
+  "id": "saqvdFoEEqFSrmPM",
+  "tags": []
+}

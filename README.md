@@ -27,7 +27,7 @@ Gmail Trigger → Text Classification → AI Agent → Gmail Response
 - Google Drive
 - Gmail
 
-🎥 **[Watch Demo](#)**  
+🎥 **[Watch Demo](https://drive.google.com/file/d/1Krq9UfmPiabNSK4Mp4qw9buk-r2CtBrB/view?usp=sharing)**  
 📂 **[View Workflow](./customer-support-agent/)**
 
 ---
@@ -57,7 +57,7 @@ Image Generation + Social Media Post
 - Image Generation
 - X / Twitter
 
-🎥 **[Watch Demo](#)**  
+🎥 **[Watch Demo](https://drive.google.com/file/d/17w1Y1TqYpGZySi3oMGRBrwlhWXiWk9BO/view?usp=sharing)**  
 📂 **[View Workflow](./social-media-agent/)**
 
 ---
@@ -89,7 +89,7 @@ Email Notification
 - Google Sheets
 - Gmail
 
-🎥 **[Watch Demo](#)**  
+🎥 **[Watch Demo](https://drive.google.com/file/d/1jMIakcSJ6bRunjV8x6K6Jp3CqJVm2UQW/view?usp=sharing)**  
 📂 **[View Workflow](./invoice-parser/)**
 
 ---
@@ -121,7 +121,7 @@ AI Agent → Retrieved Knowledge → Response
 - Google Drive
 - AI Agents
 
-🎥 **[Watch Demo](#)**  
+🎥 **[Watch Demo](https://drive.google.com/file/d/1LTZYECP0a50FTqWinNRktWzHUWMc8u9M/view?usp=sharing)**  
 📂 **[View Workflow](./rag-chatbot/)**
 
 ---

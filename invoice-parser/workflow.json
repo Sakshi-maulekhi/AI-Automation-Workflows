@@ -131,25 +131,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -224,
-        -80
-      ],
-      "id": "7bf940b0-9870-4d32-8d90-bc08e9b04a60",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "TUyYYjgWDGfm7imL",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
@@ -254,47 +235,10 @@
     },
     {
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "models/gemini-3-flash-preview"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=Invoice number :  {{ $json['invoice number'] }}\nSender email : {{ $json['sender email'] }}\nSender address :{{ $json['sender address'] }}\nInvoice data :{{ $json['invoice data'] }}\ntotal amount :{{ $json['total amount'] }}\ndue date :{{ $json['due date'] }}\n"
-            },
-            {
-              "content": "You are Shayan, the designated email expert for KamranAiInsights. Your responsibility is to professionally notify the KamranAiInsights billing team upon receiving an invoice.\n\nEmail Task\nUpon receiving invoice details, compose a clear and concise email to the billing team that includes:\n\n- Confirmation that a new invoice has been received.\n\n- Notification that the invoice has been recorded in the Invoice Database.\n\n- A direct link to the updated database for their reference:\nhttps://docs.google.com/spreadsheets/d/1Zy5XL8F_bYD9QUJsD89DHlGXxEErS5LHo7Zef0v-OdY/edit\n\nOutput Format\nReturn the following components separately:\n\nSubject: (A short and informative email subject line)\n\nEmail: (The complete body of the email to send to the billing team)",
-              "role": "model"
-            }
-          ]
-        },
-        "jsonOutput": true,
-        "builtInTools": {},
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1.2,
-      "position": [
-        288,
-        -304
-      ],
-      "id": "18a1581b-3cc0-4edb-84a4-cb270df95187",
-      "name": "Message a model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "TUyYYjgWDGfm7imL",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "sendTo": "=sakshimaulekhi84@gmail.com",
-        "subject": "={{ JSON.parse($json.content.parts[0].text).Subject }}",
+        "subject": "={{ $json.content.split('**Subject:**')[1]?.split('\\n')[0]?.trim() }}",
         "emailType": "text",
-        "message": "={{ JSON.parse($json.content.parts[0].text).Email }}",
+        "message": "={{ $json.content.split('**Email:**')[1]?.trim() }}",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
@@ -323,6 +267,61 @@
       ],
       "id": "c4f0eb3a-e8db-43b7-a7c1-d732944941d6",
       "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3.1:8b",
+          "mode": "list",
+          "cachedResultName": "llama3.1:8b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Invoice number :  {{ $json['invoice number'] }}\nSender email : {{ $json['sender email'] }}\nSender address :{{ $json['sender address'] }}\nInvoice data :{{ $json['invoice data'] }}\ntotal amount :{{ $json['total amount'] }}\ndue date :{{ $json['due date'] }}"
+            },
+            {
+              "content": "You are Shayan, the designated email expert for KamranAiInsights. Your responsibility is to professionally notify the KamranAiInsights billing team upon receiving an invoice.\n\nEmail Task\nUpon receiving invoice details, compose a clear and concise email to the billing team that includes:\n\n- Confirmation that a new invoice has been received.\n\n- Notification that the invoice has been recorded in the Invoice Database.\n\n- A direct link to the updated database for their reference:\nhttps://docs.google.com/spreadsheets/d/1Zy5XL8F_bYD9QUJsD89DHlGXxEErS5LHo7Zef0v-OdY/edit\n\nOutput Format\nReturn the following components separately:\n\nSubject: (A short and informative email subject line)\n\nEmail: (The complete body of the email to send to the billing team)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -304
+      ],
+      "id": "c9d6d498-29e6-4989-bf64-e43559b1fcd1",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -96
+      ],
+      "id": "05db4807-9940-4fbb-a87a-7f1df2424c68",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -360,17 +359,6 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Information Extractor",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Information Extractor": {
       "main": [
         [
@@ -393,6 +381,17 @@
         ]
       ]
     },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Message a model": {
       "main": [
         [
@@ -404,12 +403,12 @@
         ]
       ]
     },
-    "Send a message": {
-      "main": [
+    "Ollama Chat Model": {
+      "ai_languageModel": [
         [
           {
-            "node": "No Operation, do nothing",
-            "type": "main",
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -421,7 +420,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "e49e2a3d-d3d4-4c80-82c2-8a0c4b1f3570",
+  "versionId": "ea4b1227-bad2-491e-8148-9313bf5b321e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "26e1527ba38a5c1da6f24ac6e59153ee080d7c378383c4ff92e299be333bfc8d"

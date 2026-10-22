@@ -34,25 +34,11 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -1072,
-        -192
-      ],
-      "id": "dde1288c-98dc-4c0f-bb57-5aa5bb5b488e",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "TUyYYjgWDGfm7imL",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Search the web in Tavily",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', `The web search query. Write a specific, self-contained query that names the people, products, places or versions involved. Do not add years or dates you are not sure of; use time_range to ask for recent results instead. To limit results to specific websites, use include_domains rather than site: in the query.`, 'string') }}",
+        "includeDomains": "{{ $fromAI('Include_Domains', `Only return results from these websites, separated by commas, for example openai.com, reuters.com. Use an empty string to search the whole web.`, 'string') }}",
+        "excludeDomains": "{{ $fromAI('Exclude_Domains', `Never return results from these websites, separated by commas, for example pinterest.com. Use an empty string to exclude nothing.`, 'string') }}",
         "options": {
           "auto_parameters": false
         }
@@ -60,7 +46,7 @@
       "type": "@tavily/n8n-nodes-tavily.tavilyTool",
       "typeVersion": 2.1,
       "position": [
-        -1360,
+        -1328,
         -192
       ],
       "id": "41c43f4a-38fa-4613-8f4c-ea90bc981c54",
@@ -94,7 +80,7 @@
         "promptType": "define",
         "text": "={{ $json.output }}",
         "options": {
-          "systemMessage": "# Overview\nYou are an AI agent that transforms Social media posts into visual prompt descriptions for generating graphic marketing materials. These visuals are designed to be paired with the post on Social accounts, helping communicate the message in a visually engaging, brand-aligned way.\n\n## Objective:\n- Read and analyze the given Social media post.\n- Identify the main message, insight, or takeaway from the post.\n- Create a clear and compelling graphic prompt that can be used with a text-to-image generator.\n- The result should be a marketing-style graphic or hyperrealistic photo that:\n1) Visually supports or illustrates the key idea of the post\n2) Looks appropriate for use in a professional feed\n3) Feels polished, modern, and engaging\n\n## Output Instructions:\n- Output only the final image prompt. Do not output quotation marks.\n- Do not repeat or rephrase the post.\n- Do not add any explanations or extra content — just the image prompt.\n- Never leave things blank like \"header area reserved for customizable callout text\"\n- Output numeric stats when available in the original post\n\n## Style Guidelines:\n- Think like a brand designer or marketing creative.\n- Visuals may include: text, charts, icons, abstract shapes, overlays, modern illustrations, motion-like effects, bold typography elements (described, not rendered), or metaphorical concepts.\n- You can mention layout suggestions (e.g., \"split screen design,\" \"header with bold title and subtle background illustration\").\n- Assume the output will be generated using AI image tools — your prompt should guide those tools effectively.\n\n## Example Prompt Format:\nA modern flat-style graphic showing a human brain connected to mechanical gears, representing the fusion of AI and automation. Minimalist background, soft gradients, clean sans-serif text placement space at the top."
+          "systemMessage": "=# Overview\nYou are an AI agent that transforms Social media posts into visual prompt descriptions for generating graphic marketing materials. These visuals are designed to be paired with the post on Social accounts, helping communicate the message in a visually engaging, brand-aligned way.\n\n## Objective:\n- Read and analyze the given Social media post.\n- Identify the main message, insight, or takeaway from the post.\n- Create a clear and compelling graphic prompt that can be used with a text-to-image generator.\n- The result should be a marketing-style graphic or hyperrealistic photo that:\n1) Visually supports or illustrates the key idea of the post\n2) Looks appropriate for use in a professional feed\n3) Feels polished, modern, and engaging\n\n## Output Instructions:\n- Output only the final image prompt. Do not output quotation marks.\n- Do not repeat or rephrase the post.\n- Do not add any explanations or extra content — just the image prompt.\n- Never leave things blank like \"header area reserved for customizable callout text\"\n- Output numeric stats when available in the original post\n\n## Style Guidelines:\n- Think like a brand designer or marketing creative.\n- Visuals may include: text, charts, icons, abstract shapes, overlays, modern illustrations, motion-like effects, bold typography elements (described, not rendered), or metaphorical concepts.\n- You can mention layout suggestions (e.g., \"split screen design,\" \"header with bold title and subtle background illustration\").\n- Assume the output will be generated using AI image tools — your prompt should guide those tools effectively.\n\n## Example Prompt Format:\nA modern flat-style graphic showing a human brain connected to mechanical gears, representing the fusion of AI and automation. Minimalist background, soft gradients, clean sans-serif text placement space at the top."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -108,46 +94,43 @@
     },
     {
       "parameters": {
-        "additionalFields": {}
+        "model": "llama3.1:8b",
+        "options": {}
       },
-      "type": "n8n-nodes-base.twitter",
-      "typeVersion": 2,
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
       "position": [
-        -320,
-        -416
+        -1104,
+        -192
       ],
-      "id": "c58bcc0e-9c9e-42a6-a441-69158adb0b4c",
-      "name": "Create Tweet",
+      "id": "2f36cf4d-9510-401d-a703-f70e7b45a242",
+      "name": "Ollama Chat Model",
       "credentials": {
-        "twitterOAuth2Api": {
-          "id": "ohrTRXWowzhlPCTl",
-          "name": "X account"
+        "ollamaApi": {
+          "id": "hww8Uw4cbOt2EoLE",
+          "name": "Ollama account"
         }
       }
     },
     {
       "parameters": {
-        "resource": "image",
-        "modelId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "models/gemini-3.1-flash-image-preview"
-        },
-        "prompt": "={{ $json.output }}",
-        "options": {}
+        "chatId": "7845684243",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
         -544,
         -416
       ],
-      "id": "e6c4e182-1040-4aa8-b506-5cb21de3ad46",
-      "name": "Generate an image",
+      "id": "d8b6144d-ccf4-48d2-9285-1a6dc07e851a",
+      "name": "Send a text message",
+      "webhookId": "1f6bebbe-c0eb-4edc-8f0d-0195f706f684",
       "credentials": {
-        "googlePalmApi": {
-          "id": "TUyYYjgWDGfm7imL",
-          "name": "Google Gemini(PaLM) Api account"
+        "telegramApi": {
+          "id": "4iC7WJc9SdGAm8bL",
+          "name": "Telegram account"
         }
       }
     }
@@ -179,22 +162,6 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Social Media Post Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "Image Prompt Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Search the web in Tavily": {
       "ai_tool": [
         [
@@ -221,19 +188,24 @@
       "main": [
         [
           {
-            "node": "Generate an image",
+            "node": "Send a text message",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Generate an image": {
-      "main": [
+    "Ollama Chat Model": {
+      "ai_languageModel": [
         [
           {
-            "node": "Create Tweet",
-            "type": "main",
+            "node": "Social Media Post Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Image Prompt Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -245,7 +217,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "01cf010f-df00-4a92-9f2c-e44aa4530b8d",
+  "versionId": "1393f4f3-095c-47bc-992f-19a420b81bfc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "26e1527ba38a5c1da6f24ac6e59153ee080d7c378383c4ff92e299be333bfc8d"
